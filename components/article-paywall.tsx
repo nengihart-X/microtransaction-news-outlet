@@ -24,7 +24,7 @@ export function ArticlePaywall({ article, onUnlocked }: ArticlePaywallProps) {
     useWallet()
   const [isPaying, setIsPaying] = useState(false)
   const [paymentStep, setPaymentStep] = useState<
-    "idle" | "signing" | "verifying" | "settling" | "done"
+    "idle" | "requirements" | "signing" | "verifying" | "settling" | "done"
   >("idle")
 
   const isUnlocked = paidArticles.has(article.id)
@@ -33,7 +33,10 @@ export function ArticlePaywall({ article, onUnlocked }: ArticlePaywallProps) {
     if (!user) return
     setIsPaying(true)
 
-    // Simulate the x402 4-step flow
+    // x402 payment flow
+    setPaymentStep("requirements")
+    await new Promise((r) => setTimeout(r, 500))
+
     setPaymentStep("signing")
     await new Promise((r) => setTimeout(r, 800))
 
@@ -61,10 +64,11 @@ export function ArticlePaywall({ article, onUnlocked }: ArticlePaywallProps) {
 
   const stepLabels = {
     idle: "",
-    signing: "Signing...",
-    verifying: "Verifying...",
-    settling: "Settling...",
-    done: "Paid",
+    requirements: "Getting requirements...",
+    signing: "Signing payment...",
+    verifying: "Verifying payment...",
+    settling: "Settling on-chain...",
+    done: "Payment complete",
   }
 
   return (
@@ -129,7 +133,7 @@ export function ArticlePaywall({ article, onUnlocked }: ArticlePaywallProps) {
           )}
 
           <div className="mt-4 text-[10px] uppercase tracking-widest text-muted-foreground">
-            x402 Protocol • Instant Settlement
+            Powered by x402 Protocol • Instant Settlement
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
 
 import { generateTxHash, type Article } from "@/lib/data"
+import { getX402Client, type X402PaymentClient } from "@/lib/x402"
 
 export interface PaymentRecord {
   txHash: string
@@ -79,6 +80,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [paidArticles, setPaidArticles] = useState<Set<string>>(new Set())
   const [paymentHistory, setPaymentHistory] = useState<PaymentRecord[]>([])
   const [localArticles, setLocalArticles] = useState<Article[]>([])
+  const [x402Client, setX402Client] = useState<X402PaymentClient | null>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -118,6 +120,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       if (address) {
         const stxBalance = await fetchBalance(address)
 
+        // Initialize x402 client when user is available
+        const client = getX402Client(address)
+        setX402Client(client)
+
         // Restore local state if available
         const savedPublisher = localStorage.getItem(`publisher_${address}`)
         const publisherProfile = savedPublisher ? JSON.parse(savedPublisher) : undefined
@@ -138,6 +144,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         }))
       } else {
         setUser(null)
+        setX402Client(null)
       }
     } catch (error) {
       console.error("Error syncing user:", error)
@@ -261,74 +268,77 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
   const payForArticle = useCallback(
     async (articleId: string, price: number, currency: string) => {
-      if (!user) return { success: false, txHash: null }
+      console.log("payForArticle called with x402", { articleId, price, currency, user })
+      if (!user || !x402Client) {
+        console.log("No user or x402 client, returning early")
+        return { success: false, txHash: null }
+      }
 
       try {
-        // Real x402 payment using Stacks blockchain
-        const { openSTXTransfer } = await import("@stacks/connect")
-
         // Import articles to get author wallet
         const { articles } = await import("@/lib/data")
         const article = articles.find(a => a.id === articleId)
-        if (!article) return { success: false, txHash: null }
+        if (!article) {
+          console.log("Article not found:", articleId)
+          return { success: false, txHash: null }
+        }
 
         const recipientAddress = article.author.walletAddress
-        // Convert price to microSTX (1 STX = 1,000,000 microSTX)
-        const amountInMicroSTX = Math.floor(price * 1000000)
-
-        return new Promise((resolve) => {
-          openSTXTransfer({
-            recipient: recipientAddress,
-            amount: amountInMicroSTX.toString(),
-            memo: `Payment for: ${article.title.substring(0, 30)}`,
-            onFinish: (data) => {
-              const txHash = data.txId
-
-              setPaidArticles((prev) => {
-                const next = new Set(prev)
-                next.add(articleId)
-                return next
-              })
-
-              setPaymentHistory((prev) => [
-                {
-                  txHash,
-                  timestamp: new Date().toISOString(),
-                  articleId,
-                  amount: price,
-                  currency,
-                },
-                ...prev,
-              ])
-
-              setUser((prev) =>
-                prev
-                  ? {
-                    ...prev,
-                    balance: {
-                      ...prev.balance,
-                      stx: Math.max(0, prev.balance.stx - price),
-                    },
-                    articlesRead: prev.articlesRead + 1,
-                    totalSpent: prev.totalSpent + price,
-                  }
-                  : null
-              )
-
-              resolve({ success: true, txHash })
-            },
-            onCancel: () => {
-              console.log("Payment cancelled by user")
-              resolve({ success: false, txHash: null })
-            },
-          })
+        console.log("Initiating x402 payment", {
+          articleId,
+          price,
+          recipient: recipientAddress,
+          currency
         })
+
+        // Use x402 client to handle payment
+        const result = await x402Client.payForArticle(articleId, price, recipientAddress)
+        
+        if (result.success && result.txHash) {
+          console.log("x402 payment successful", result.txHash)
+
+          setPaidArticles((prev) => {
+            const next = new Set(prev)
+            next.add(articleId)
+            return next
+          })
+
+          setPaymentHistory((prev) => [
+            {
+              txHash: result.txHash || '',
+              timestamp: new Date().toISOString(),
+              articleId,
+              amount: price,
+              currency,
+            },
+            ...prev,
+          ])
+
+          setUser((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  balance: {
+                    ...prev.balance,
+                    stx: Math.max(0, prev.balance.stx - price),
+                  },
+                  articlesRead: prev.articlesRead + 1,
+                  totalSpent: prev.totalSpent + price,
+                }
+              : null
+          )
+
+          return { success: true, txHash: result.txHash }
+        } else {
+          console.log("x402 payment failed:", result.error)
+          return { success: false, txHash: null }
+        }
       } catch (error) {
-        console.error("Payment error:", error)
+        console.error("x402 payment error:", error)
         return { success: false, txHash: null }
       }
     },
-    [user]
+    [user, x402Client]
   )
 
   if (!mounted) {

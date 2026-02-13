@@ -103,6 +103,104 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* Medium Comparison */}
+        <section className="mx-auto max-w-4xl px-4 py-16">
+          <div className="text-center">
+            <div className="mx-auto flex w-fit items-center justify-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5 text-xs font-medium text-muted-foreground">
+              <Newspaper className="h-3 w-3" />
+              Crypto-Native Publishing
+            </div>
+            <h2 className="mt-6 font-serif text-2xl font-bold text-foreground md:text-3xl">
+              Medium + Bitcoin = The Wire
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+              We're building the crypto version of Medium - but better. Imagine paying only for articles you actually read, 
+              with 100% going directly to journalists. No subscriptions, no ads, no middlemen.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h3 className="font-semibold text-card-foreground flex items-center gap-2">
+                <span className="text-lg">📰</span> Traditional Medium
+              </h3>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✗</span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">$5/month subscription</p>
+                    <p className="text-xs text-muted-foreground">Pay for content you never read</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✗</span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">30-50% platform fees</p>
+                    <p className="text-xs text-muted-foreground">Medium takes huge cut from writers</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✗</span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Centralized control</p>
+                    <p className="text-xs text-muted-foreground">Corporate censorship possible</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✗</span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Monthly payouts</p>
+                    <p className="text-xs text-muted-foreground">Writers wait weeks for payment</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-accent/20 bg-accent/5 p-6">
+              <h3 className="font-semibold text-card-foreground flex items-center gap-2">
+                <span className="text-lg">⚡</span> The Wire (x402-powered)
+              </h3>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500 mt-0.5">✓</span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">$0.03-0.06 per article</p>
+                    <p className="text-xs text-muted-foreground">Pay only for what you read</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500 mt-0.5">✓</span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">0% platform fees</p>
+                    <p className="text-xs text-muted-foreground">100% goes directly to journalists</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500 mt-0.5">✓</span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Decentralized</p>
+                    <p className="text-xs text-muted-foreground">Censorship-resistant on Stacks</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500 mt-0.5">✓</span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Instant settlement</p>
+                    <p className="text-xs text-muted-foreground">Bitcoin finality in ~30 seconds</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-semibold text-foreground">The result:</span> Writers earn more, readers pay less, 
+              and journalism becomes sustainable through direct reader-to-writer microtransactions.
+            </p>
+          </div>
+        </section>
+
         {/* Steps */}
         <section className="mx-auto max-w-4xl px-4 py-16">
           <h2 className="font-serif text-2xl font-bold text-foreground">
