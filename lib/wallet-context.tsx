@@ -265,7 +265,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
       try {
         // Real x402 payment using Stacks blockchain
-        const { openContractCall } = await import("@stacks/connect")
+        const { openSTXTransfer } = await import("@stacks/connect")
 
         // Import articles to get author wallet
         const { articles } = await import("@/lib/data")
@@ -277,15 +277,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         const amountInMicroSTX = Math.floor(price * 1000000)
 
         return new Promise((resolve) => {
-          openContractCall({
-            contractAddress: "SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE",
-            contractName: "stx-transfer",
-            functionName: "transfer",
-            functionArgs: [
-              `u${amountInMicroSTX}`,
-              `'${recipientAddress}`,
-              `(some 0x${Buffer.from(`Article:${articleId}`).toString('hex')})`
-            ],
+          openSTXTransfer({
+            recipient: recipientAddress,
+            amount: amountInMicroSTX.toString(),
+            memo: `Payment for: ${article.title.substring(0, 30)}`,
             onFinish: (data) => {
               const txHash = data.txId
 
