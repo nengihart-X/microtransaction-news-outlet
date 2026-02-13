@@ -2,7 +2,7 @@
 
 > **Pay for journalism, not subscriptions.** A decentralized news platform powered by the x402 protocol on Stacks blockchain, enabling micropayments for individual articles.
 
-🏆 **Built for [Hackathon Name]**
+🏆 **Built for x402 Stacks Challenge**
 
 ## 🌟 Overview
 
@@ -106,7 +106,8 @@ The Wire leverages the **x402 HTTP status code** standard for microtransactions:
 
 ## 📸 Screenshots
 
-> *Add screenshots of your application here*
+> *<img width="1920" height="5406" alt="image" src="https://github.com/user-attachments/assets/bd66edef-5e64-4378-9712-4b1f7e040902" />
+*
 
 ## 🏗️ Project Structure
 
@@ -165,4 +166,4 @@ MIT License - see LICENSE file for details
 
 ---
 
-Built with ❤️ for [Hackathon Name] | Powered by Stacks & x402
+Built with ❤️ for x402 Stacks Challenge | Powered by Stacks & x402
