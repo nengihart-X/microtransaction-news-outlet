@@ -263,44 +263,75 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     async (articleId: string, price: number, currency: string) => {
       if (!user) return { success: false, txHash: null }
 
-      // Real x402 would use openContractCall here
-      // For now, we simulate the delay and state update
-      await new Promise((r) => setTimeout(r, 1200))
+      try {
+        // Real x402 payment using Stacks blockchain
+        const { openContractCall } = await import("@stacks/connect")
 
-      const txHash = generateTxHash()
+        // Import articles to get author wallet
+        const { articles } = await import("@/lib/data")
+        const article = articles.find(a => a.id === articleId)
+        if (!article) return { success: false, txHash: null }
 
-      setPaidArticles((prev) => {
-        const next = new Set(prev)
-        next.add(articleId)
-        return next
-      })
+        const recipientAddress = article.author.walletAddress
+        // Convert price to microSTX (1 STX = 1,000,000 microSTX)
+        const amountInMicroSTX = Math.floor(price * 1000000)
 
-      setPaymentHistory((prev) => [
-        {
-          txHash,
-          timestamp: new Date().toISOString(),
-          articleId,
-          amount: price,
-          currency,
-        },
-        ...prev,
-      ])
+        return new Promise((resolve) => {
+          openContractCall({
+            contractAddress: "SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE",
+            contractName: "stx-transfer",
+            functionName: "transfer",
+            functionArgs: [
+              `u${amountInMicroSTX}`,
+              `'${recipientAddress}`,
+              `(some 0x${Buffer.from(`Article:${articleId}`).toString('hex')})`
+            ],
+            onFinish: (data) => {
+              const txHash = data.txId
 
-      setUser((prev) =>
-        prev
-          ? {
-            ...prev,
-            balance: {
-              ...prev.balance,
-              stx: Math.max(0, prev.balance.stx - price),
+              setPaidArticles((prev) => {
+                const next = new Set(prev)
+                next.add(articleId)
+                return next
+              })
+
+              setPaymentHistory((prev) => [
+                {
+                  txHash,
+                  timestamp: new Date().toISOString(),
+                  articleId,
+                  amount: price,
+                  currency,
+                },
+                ...prev,
+              ])
+
+              setUser((prev) =>
+                prev
+                  ? {
+                    ...prev,
+                    balance: {
+                      ...prev.balance,
+                      stx: Math.max(0, prev.balance.stx - price),
+                    },
+                    articlesRead: prev.articlesRead + 1,
+                    totalSpent: prev.totalSpent + price,
+                  }
+                  : null
+              )
+
+              resolve({ success: true, txHash })
             },
-            articlesRead: prev.articlesRead + 1,
-            totalSpent: prev.totalSpent + price,
-          }
-          : null
-      )
-
-      return { success: true, txHash }
+            onCancel: () => {
+              console.log("Payment cancelled by user")
+              resolve({ success: false, txHash: null })
+            },
+          })
+        })
+      } catch (error) {
+        console.error("Payment error:", error)
+        return { success: false, txHash: null }
+      }
     },
     [user]
   )
