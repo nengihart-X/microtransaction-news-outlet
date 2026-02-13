@@ -106,7 +106,7 @@ The Wire leverages the **x402 HTTP status code** standard for microtransactions:
 
 ## 📸 Screenshots
 
-> *![Uploading image.png…]()
+> *<img width="1920" height="5406" alt="image" src="https://github.com/user-attachments/assets/bd66edef-5e64-4378-9712-4b1f7e040902" />
 *
 
 ## 🏗️ Project Structure
