@@ -4,7 +4,13 @@
 
 🏆 **Built for x402 Stacks Challenge**
 
-## 🌟 Overview
+## � Live Demo
+
+**🚀 Try it now:** [https://microtransaction-news-outlet.vercel.app/](https://microtransaction-news-outlet.vercel.app/)
+
+Connect your Stacks wallet and experience the future of journalism!
+
+## � Overview
 
 The Wire reimagines online journalism by eliminating subscription paywalls and enabling direct micro-transactions between readers and writers. Instead of paying monthly fees for content they may never read, users pay small amounts (in STX, sBTC, or USDCx) only for the articles they actually consume.
 
@@ -47,12 +53,22 @@ Journalists receive 100% of earnings directly to their Stacks wallet—no platfo
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### 🌐 Try Live Demo First
+
+**Experience the platform now:** [https://microtransaction-news-outlet.vercel.app/](https://microtransaction-news-outlet.vercel.app/)
+
+No installation required - just connect your Stacks wallet and start reading!
+
+### Local Development
+
+If you want to run the project locally:
+
+#### Prerequisites
 - Node.js 18+ 
 - npm or yarn
 - Stacks wallet (Leather, Xverse, or Hiro)
 
-### Installation
+#### Installation
 
 ```bash
 # Clone the repository
@@ -62,7 +78,7 @@ git clone https://github.com/nengihart-X/microtransaction-news-outlet.git
 cd microtransaction-news-outlet
 
 # Install dependencies
-npm install
+npm install --legacy-peer-deps
 
 # Run development server
 npm run dev
@@ -162,6 +178,7 @@ MIT License - see LICENSE file for details
 ## 📧 Contact
 
 **Project Author**: nengihart-X  
+**Live Site**: [https://microtransaction-news-outlet.vercel.app/](https://microtransaction-news-outlet.vercel.app/)  
 **Repository**: [github.com/nengihart-X/microtransaction-news-outlet](https://github.com/nengihart-X/microtransaction-news-outlet)
 
 ---
